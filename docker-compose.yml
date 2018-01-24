@@ -1,0 +1,31 @@
+version: '2'
+services:
+
+  logstash:
+    build:
+      context: ./Logstash
+    container_name: logstash
+    ports:
+     - "8080:5044"
+    volumes:
+     - ./Logstash/config:/usr/share/logstash/pipeline/
+    links:
+     - elasticsearch
+
+  elasticsearch:
+    build:
+      context: ./Elasticsearch
+    container_name: elasticsearch
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  kibana:
+    build: 
+      context: ./Kibana
+    container_name: kibana
+    ports:
+     - "80:5601"
+    links:
+     - elasticsearch

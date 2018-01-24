@@ -1,0 +1,20 @@
+filter {
+  if [type] == "nginx_log" {
+
+    grok {
+      match => [ "message" , "%{COMBINEDAPACHELOG}+%{GREEDYDATA:extra_fields}"]
+      overwrite => [ "message" ]
+    }
+
+    mutate {                                                                                                                                 
+      convert => ["response", "integer"]
+      convert => ["bytes", "integer"]
+      convert => ["responsetime", "float"]
+    }
+    
+    date {
+      match => [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
+      remove_field => [ "timestamp" ]
+    }
+  }
+}
